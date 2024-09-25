@@ -1,0 +1,6 @@
+streamlit==1.37.0
+mysql-connector==2.2.9
+mysql-connector-python==9.0.0
+pandas==2.0.3
+numpy==1.26.4
+gspread==6.1.2
