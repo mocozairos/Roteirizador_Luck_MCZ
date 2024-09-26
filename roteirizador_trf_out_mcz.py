@@ -3104,7 +3104,7 @@ if visualizar_voos and servico_roteiro:
 
     df_router_filtrado = df_router_filtrado[~df_router_filtrado['Observacao'].str.upper().str.contains('CLD', na=False)]
 
-    st.session_state.df_servico_voos_horarios['Paxs']=0
+    st.session_state.df_servico_voos_horarios['Paxs Regular']=0
 
     for index in range(len(st.session_state.df_servico_voos_horarios)):
 
@@ -3123,7 +3123,7 @@ if visualizar_voos and servico_roteiro:
                                                        (df_router_filtrado['Horario Voo']==h_voo) & 
                                                        (df_router_filtrado['Modo do Servico']=='REGULAR')]['Total CHD'].sum()
         
-        st.session_state.df_servico_voos_horarios.at[index, 'Paxs'] = total_paxs_ref
+        st.session_state.df_servico_voos_horarios.at[index, 'Paxs Regular'] = total_paxs_ref
     
     st.session_state.df_servico_voos_horarios['Horario Voo'] = pd.to_datetime(st.session_state.df_servico_voos_horarios['Horario Voo'], 
                                                                               format='%H:%M:%S').dt.time
