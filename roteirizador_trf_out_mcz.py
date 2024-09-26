@@ -3127,10 +3127,12 @@ if visualizar_voos and servico_roteiro:
     
     st.session_state.df_servico_voos_horarios['Horario Voo'] = pd.to_datetime(st.session_state.df_servico_voos_horarios['Horario Voo'], 
                                                                               format='%H:%M:%S').dt.time
-    
+
+row4 = st.columns(2)
+
 if servico_roteiro and 'df_servico_voos_horarios' in st.session_state:
 
-    with row2[0]:
+    with row4[0]:
 
         st.dataframe(st.session_state.df_servico_voos_horarios, hide_index=True) 
 
