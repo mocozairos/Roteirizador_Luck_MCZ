@@ -3101,6 +3101,29 @@ if visualizar_voos and servico_roteiro:
     
     st.session_state.df_servico_voos_horarios = df_router_filtrado[['Servico', 'Voo', 'Horario Voo']]\
     .sort_values(by=['Horario Voo']).drop_duplicates().reset_index(drop=True)
+
+    df_router_filtrado = df_router_filtrado[~df_router_filtrado['Observacao'].str.upper().str.contains('CLD', na=False)]
+
+    st.session_state.df_servico_voos_horarios['Paxs']=0
+
+    for index in range(len(st.session_state.df_servico_voos_horarios)):
+
+        servico = st.session_state.df_servico_voos_horarios.at[index, 'Servico']
+
+        voo = st.session_state.df_servico_voos_horarios.at[index, 'Voo']
+
+        h_voo = st.session_state.df_servico_voos_horarios.at[index, 'Horario Voo']
+
+        total_paxs_ref = \
+            df_router_filtrado[(df_router_filtrado['Servico']==servico) & (df_router_filtrado['Voo']==voo) & 
+                               (df_router_filtrado['Horario Voo']==h_voo) & (df_router_filtrado['Modo do Servico']=='REGULAR')]\
+                                ['Total ADT'].sum() + \
+                                    df_router_filtrado[(df_router_filtrado['Servico']==servico) & 
+                                                       (df_router_filtrado['Voo']==voo) & 
+                                                       (df_router_filtrado['Horario Voo']==h_voo) & 
+                                                       (df_router_filtrado['Modo do Servico']=='REGULAR')]['Total CHD'].sum()
+        
+        st.session_state.df_servico_voos_horarios.at[index, 'Paxs'] = total_paxs_ref
     
     st.session_state.df_servico_voos_horarios['Horario Voo'] = pd.to_datetime(st.session_state.df_servico_voos_horarios['Horario Voo'], 
                                                                               format='%H:%M:%S').dt.time
@@ -3336,15 +3359,13 @@ if roteirizar:
 
     df_roteiros_alternativos, df_roteiros_apoios_alternativos = gerar_roteiros_apoio(df_roteiros_alternativos)
 
-    if len(df_roteiros_alternativos_2)>0:
+    # Identificando serviços das rotas alternativas 2 que vão precisar de apoios
 
-        # Identificando serviços das rotas alternativas 2 que vão precisar de apoios
+    df_roteiros_alternativos_2 = identificar_apoios_em_df(df_roteiros_alternativos_2)
 
-        df_roteiros_alternativos_2 = identificar_apoios_em_df(df_roteiros_alternativos_2)
+    # Gerando rotas de apoios de rotas alternativas 2
 
-        # Gerando rotas de apoios de rotas alternativas 2
-
-        df_roteiros_alternativos_2, df_roteiros_apoios_alternativos_2 = gerar_roteiros_apoio(df_roteiros_alternativos_2)
+    df_roteiros_alternativos_2, df_roteiros_apoios_alternativos_2 = gerar_roteiros_apoio(df_roteiros_alternativos_2)
 
     # Plotando roteiros de cada carro
 
