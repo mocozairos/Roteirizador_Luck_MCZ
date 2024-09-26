@@ -2956,7 +2956,7 @@ if not 'df_grande_maceio' in st.session_state:
     st.session_state.dict_regioes_hoteis = \
         {'OUT - ORLA DE MACEIÓ (OU PRÓXIMOS) ': ['df_orla_maceio', 'Orla Maceio', 'Hoteis Orla Maceio', 'Orla Maceió'], 
          'OUT - GRANDE MACEIÓ': ['df_grande_maceio', 'Grande Maceio', 'Hoteis Grande Maceio', 'Grande Maceió'], 
-         'OUT - BARRA DE SÃO MIGUEL': ['df_sao_miguel', 'Sao Miguel', 'Hoteis Sao Miguel', 'São Miguel'], 
+         'OUT - BARRA DE SÃO MIGUEL': ['df_sao_miguel', 'Sao Miguel', 'Hoteis Barra de Sao Miguel', 'São Miguel'], 
          'OUT- FRANCÊS': ['df_frances', 'Frances', 'Hoteis Frances', 'Francês'], 
          'OUT - MARAGOGI / JAPARATINGA': ['df_maragogi', 'Maragogi', 'Hoteis Maragogi', 'Maragogi'], 
          'OUT - SÃO MIGUEL DOS MILAGRES ': ['df_milagres', 'Milagres', 'Hoteis Milagres', 'Milagres'], 
@@ -3032,7 +3032,7 @@ with row2[0]:
             st.session_state.dict_regioes_hoteis = \
                 {'OUT - ORLA DE MACEIÓ (OU PRÓXIMOS) ': ['df_orla_maceio', 'Orla Maceio', 'Hoteis Orla Maceio', 'Orla Maceió'], 
                 'OUT - GRANDE MACEIÓ': ['df_grande_maceio', 'Grande Maceio', 'Hoteis Grande Maceio', 'Grande Maceió'], 
-                'OUT - BARRA DE SÃO MIGUEL': ['df_sao_miguel', 'Sao Miguel', 'Hoteis Sao Miguel', 'São Miguel'], 
+                'OUT - BARRA DE SÃO MIGUEL': ['df_sao_miguel', 'Sao Miguel', 'Hoteis Barra de Sao Miguel', 'São Miguel'], 
                 'OUT- FRANCÊS': ['df_frances', 'Frances', 'Hoteis Frances', 'Francês'], 
                 'OUT - MARAGOGI / JAPARATINGA': ['df_maragogi', 'Maragogi', 'Hoteis Maragogi', 'Maragogi'], 
                 'OUT - SÃO MIGUEL DOS MILAGRES ': ['df_milagres', 'Milagres', 'Hoteis Milagres', 'Milagres'], 
