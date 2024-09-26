@@ -56,8 +56,8 @@ def puxar_sequencias_hoteis():
     lista_abas = ['Hoteis Orla Maceio', 'Hoteis Grande Maceio', 'Hoteis Maragogi', 'Hoteis Santo Antonio', 'Hoteis Frances', 
                   'Hoteis Milagres', 'Hoteis Barra de Sao Miguel', 'Hoteis Porto']
 
-    lista_df_hoteis = ['df_hoteis_orla_maceio', 'df_hoteis_grande_maceio', 'df_hoteis_maragogi', 'df_hoteis_santo_antonio', 
-                       'df_hoteis_frances', 'df_hoteis_milagres', 'df_hoteis_sao_miguel', 'df_hoteis_porto']
+    lista_df_hoteis = ['df_orla_maceio', 'df_grande_maceio', 'df_maragogi', 'df_santo_antonio', 
+                       'df_frances', 'df_milagres', 'df_sao_miguel', 'df_porto']
 
     for index in range(len(lista_abas)):
 
