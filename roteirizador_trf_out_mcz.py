@@ -5,7 +5,9 @@ import pandas as pd
 import datetime
 from datetime import timedelta, time
 from itertools import combinations
-import xlwings as xw
+from google.oauth2 import service_account
+import gspread 
+import webbrowser
 import re
 
 def gerar_df_phoenix(vw_name):
@@ -42,23 +44,32 @@ def gerar_df_phoenix(vw_name):
 
 def puxar_sequencias_hoteis():
 
-    nome_excel = 'BD - Hoteis Maceio.xlsx'
+    nome_credencial = st.secrets["CREDENCIAL_SHEETS"]
+    credentials = service_account.Credentials.from_service_account_info(nome_credencial)
+    scope = ['https://www.googleapis.com/auth/spreadsheets']
+    credentials = credentials.with_scopes(scope)
+    client = gspread.authorize(credentials)
 
-    st.session_state.df_orla_maceio = pd.read_excel(nome_excel, sheet_name='Hoteis Orla Maceio')
+    # Abrir a planilha desejada pelo seu ID
+    spreadsheet = client.open_by_key('1ebhHZGC60jawQqnjnF9V7Jr5DEsRsSeZE60Oxg4KA7g')
 
-    st.session_state.df_grande_maceio = pd.read_excel(nome_excel, sheet_name='Hoteis Grande Maceio')
+    lista_abas = ['Hoteis Orla Maceio', 'Hoteis Grande Maceio', 'Hoteis Maragogi', 'Hoteis Santo Antonio', 'Hoteis Frances', 
+                  'Hoteis Milagres', 'Hoteis Sao Miguel', 'Hoteis Porto']
 
-    st.session_state.df_maragogi = pd.read_excel(nome_excel, sheet_name='Hoteis Maragogi')
+    lista_df_hoteis = ['df_hoteis_orla_maceio', 'df_hoteis_grande_maceio', 'df_hoteis_maragogi', 'df_hoteis_santo_antonio', 
+                       'df_hoteis_frances', 'df_hoteis_milagres', 'df_hoteis_sao_miguel', 'df_hoteis_porto']
 
-    st.session_state.df_santo_antonio = pd.read_excel(nome_excel, sheet_name='Hoteis Santo Antonio')
+    for index in range(len(lista_abas)):
 
-    st.session_state.df_frances = pd.read_excel(nome_excel, sheet_name='Hoteis Frances')
+        aba = lista_abas[index]
 
-    st.session_state.df_milagres = pd.read_excel(nome_excel, sheet_name='Hoteis Milagres')
+        df_hotel = lista_df_hoteis[index]
+        
+        sheet = spreadsheet.worksheet(aba)
 
-    st.session_state.df_sao_miguel = pd.read_excel(nome_excel, sheet_name='Hoteis Sao Miguel')
+        sheet_data = sheet.get_all_values()
 
-    st.session_state.df_porto = pd.read_excel(nome_excel, sheet_name='Hoteis Porto')
+        st.session_state[df_hotel] = pd.DataFrame(sheet_data[1:], columns=sheet_data[0])
 
 def transformar_timedelta(intervalo):
     
@@ -92,26 +103,28 @@ def inserir_hoteis_faltantes(itens_faltantes, df_hoteis, aba_excel, regiao):
 
     st.dataframe(df_itens_faltantes, hide_index=True)
 
-    df_itens_faltantes['Sequência']=''
-
-    df_itens_faltantes['Apoio']=''
+    df_itens_faltantes[['Região', 'Sequência', 'Bus', 'Micro', 'Van']]=''
 
     df_hoteis_geral = pd.concat([df_hoteis, df_itens_faltantes])
 
-    wb = xw.Book('BD - Hoteis Maceio.xlsx')
+    nome_credencial = st.secrets["CREDENCIAL_SHEETS"]
+    credentials = service_account.Credentials.from_service_account_info(nome_credencial)
+    scope = ['https://www.googleapis.com/auth/spreadsheets']
+    credentials = credentials.with_scopes(scope)
+    client = gspread.authorize(credentials)
+    
+    spreadsheet = client.open_by_key('1ebhHZGC60jawQqnjnF9V7Jr5DEsRsSeZE60Oxg4KA7g')
 
-    sheet = wb.sheets[aba_excel]
-
-    sheet.range('A2:Z100000').clear_contents()
-
-    sheet.range('A2').options(index=False).value = df_hoteis_geral.values
-
-    wb.save()
-
-    wb.close()
+    sheet = spreadsheet.worksheet(aba_excel)
+    sheet_data = sheet.get_all_values()
+    limpar_colunas = "A:F"
+    sheet.batch_clear([limpar_colunas])
+    data = [df_hoteis_geral.columns.values.tolist()] + df_hoteis_geral.values.tolist()
+    sheet.update("A1", data)
 
     st.error('Os hoteis acima não estão cadastrados na lista de sequência de hoteis.' + 
              f' Eles foram inseridos no final da lista de {regiao}. Por favor, coloque-os na sequência e tente novamente')
+
 
 def ordenar_juncoes(df_router_ref):
 
