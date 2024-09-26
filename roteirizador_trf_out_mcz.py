@@ -3059,6 +3059,10 @@ with row2[0]:
             
             st.session_state.vw_payment_guide = gerar_df_phoenix('vw_payment_guide')
 
+            if 'df_servico_voos_horarios' in st.session_state:
+                
+                st.session_state['df_servico_voos_horarios'] = pd.DataFrame(columns=['Servico', 'Voo', 'Horario Voo'])
+
     # Campo de data
 
     container_roteirizar = st.container(border=True)
