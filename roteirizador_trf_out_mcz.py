@@ -3541,6 +3541,8 @@ if 'nome_html' in st.session_state and len(st.session_state.df_roteiros_alternat
 
             df_pdf = pd.concat([df_router_filtrado_2, df_fretamentos, df_hoteis_pax_max, df_juncoes_pax_max, df_voos_pax_max, 
                                 df_roteiros_alternativos], ignore_index=True)
+
+            df_pdf_2 = df_pdf.sort_values(by='Reserva').reset_index(drop=True)
             
             for index in range(len(df_pdf)):
 
@@ -3559,6 +3561,8 @@ if 'nome_html' in st.session_state and len(st.session_state.df_roteiros_alternat
             df_pdf = df_pdf.sort_values(by=['Horario Voo / Menor Horário', 'Junção']).reset_index(drop=True)
 
             inserir_roteiros_html(st.session_state.nome_html, df_pdf)
+
+            inserir_roteiros_html(st.session_state.nome_html, df_pdf_2)
 
             with open(st.session_state.nome_html, "r", encoding="utf-8") as file:
 
