@@ -3586,7 +3586,7 @@ if 'nome_html' in st.session_state and len(st.session_state.df_roteiros_alternat
             df_pdf = pd.concat([df_router_filtrado_2, df_fretamentos, df_hoteis_pax_max, df_juncoes_pax_max, df_voos_pax_max, 
                                 df_roteiros_alternativos], ignore_index=True)
 
-            df_pdf_2 = df_pdf.sort_values(by='Reserva').reset_index(drop=True)
+            df_pdf_2 = df_pdf[['Reserva', 'Data Horario Apresentacao']].sort_values(by='Reserva').reset_index(drop=True)
             
             for index in range(len(df_pdf)):
 
