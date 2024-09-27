@@ -2100,6 +2100,38 @@ def definir_html(df_ref):
 
     return html
 
+def definir_html_2(df_ref):
+
+    html=df_ref.to_html(index=False)
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {{
+                text-align: center;  /* Centraliza o texto */
+            }}
+            table {{
+                margin: 0 auto;  /* Centraliza a tabela */
+                border-collapse: collapse;  /* Remove espaço entre as bordas da tabela */
+            }}
+            th, td {{
+                padding: 8px;  /* Adiciona espaço ao redor do texto nas células */
+                border: 1px solid black;  /* Adiciona bordas às células */
+                text-align: center;
+            }}
+        </style>
+    </head>
+    <body>
+        {html}
+    </body>
+    </html>
+    """
+
+    return html
+
 def criar_output_html(nome_html, html):
 
     with open(nome_html, "w", encoding="utf-8") as file:
@@ -2114,7 +2146,7 @@ def criar_output_html(nome_html, html):
 
 def inserir_html_2(nome_html, df):
 
-    html = definir_html(df)
+    html = definir_html_2(df)
 
     with open(nome_html, "a", encoding="utf-8") as file:
 
