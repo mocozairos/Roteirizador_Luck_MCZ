@@ -3184,7 +3184,7 @@ with row2[1]:
 
             st.session_state.df_juncao_voos = pd.concat([st.session_state.df_juncao_voos, df_voos_hi_hf], ignore_index=True)
 
-    voos_nao_operantes = st.multiselect('Voos s/ Operar', lista_voos_data_roteiro)
+    voos_nao_operantes = st.multiselect('Voos s/ Operar', sorted(lista_voos_data_roteiro))
 
 # Botões pra limpar junções
 
