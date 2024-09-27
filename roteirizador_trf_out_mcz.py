@@ -2112,7 +2112,9 @@ def criar_output_html(nome_html, html):
 
         file.write(f'<p style="font-size:40px;">Roteiros</p>\n\n')
 
-def inserir_html_2(nome_html, html):
+def inserir_html_2(nome_html, df):
+
+    html = definir_html(df)
 
     with open(nome_html, "a", encoding="utf-8") as file:
 
