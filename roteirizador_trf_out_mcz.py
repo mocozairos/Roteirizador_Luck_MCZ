@@ -2112,6 +2112,16 @@ def criar_output_html(nome_html, html):
 
         file.write(f'<p style="font-size:40px;">Roteiros</p>\n\n')
 
+def inserir_html_2(nome_html, html):
+
+    with open(nome_html, "a", encoding="utf-8") as file:
+
+        file.write('<br><br><br>')
+
+        file.write(f'<p style="font-size:40px;">Mapa de Serviços</p>\n\n')
+        
+        file.write(html)
+
 def inserir_roteiros_html(nome_html, df_pdf):
 
     roteiro = 0
@@ -3562,7 +3572,7 @@ if 'nome_html' in st.session_state and len(st.session_state.df_roteiros_alternat
 
             inserir_roteiros_html(st.session_state.nome_html, df_pdf)
 
-            inserir_roteiros_html(st.session_state.nome_html, df_pdf_2)
+            inserir_html_2(st.session_state.nome_html, df_pdf_2)
 
             with open(st.session_state.nome_html, "r", encoding="utf-8") as file:
 
