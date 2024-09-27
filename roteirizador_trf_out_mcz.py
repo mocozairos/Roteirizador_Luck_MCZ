@@ -3076,6 +3076,8 @@ with row2[0]:
 
     lista_servicos = df_router_data_roteiro['Servico'].unique().tolist()
 
+    lista_voos_data_roteiro = df_router_data_roteiro['Voo'].unique().tolist()
+
     servico_roteiro = container_roteirizar.selectbox('Serviço', lista_servicos, index=None, placeholder='Escolha um Serviço', 
                                                      key='servico_roteiro')  
 
@@ -3182,6 +3184,10 @@ with row2[1]:
 
             st.session_state.df_juncao_voos = pd.concat([st.session_state.df_juncao_voos, df_voos_hi_hf], ignore_index=True)
 
+with row4[1]:
+
+    voos_nao_operantes = st.multiselect('Voos s/ Operar', lista_voos_data_roteiro)
+
 # Botões pra limpar junções
 
 with row2[2]:
@@ -3260,7 +3266,8 @@ if roteirizar:
     df_router_filtrado = st.session_state.df_router[(st.session_state.df_router['Data Execucao']==data_roteiro) & 
                                                     (st.session_state.df_router['Tipo de Servico']=='OUT') &  
                                                     (st.session_state.df_router['Status do Servico']!='CANCELADO') & 
-                                                    (st.session_state.df_router['Servico']==servico_roteiro)].reset_index(drop=True)
+                                                    (st.session_state.df_router['Servico']==servico_roteiro) & 
+                                                    ~(st.session_state.df_router['Voo'].isin(voos_nao_operantes))].reset_index(drop=True)
     
     # Categorizando serviços com 'EXCLUSIVO' na observação
     
