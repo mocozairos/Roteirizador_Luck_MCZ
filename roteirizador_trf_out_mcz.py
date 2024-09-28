@@ -3334,6 +3334,8 @@ if roteirizar:
 
         roteiro = 0
 
+        df_router_filtrado_2['Horario Voo'] = pd.to_datetime(df_router_filtrado_2['Horario Voo'], format='%H:%M:%S').dt.time
+
         # Roteirizando Fretamentos
 
         df_fretamentos = df_router_filtrado_2[df_router_filtrado_2['Voo'].isin(voos_fret)].reset_index()
@@ -3364,8 +3366,6 @@ if roteirizar:
         df_juncoes_pax_max = pd.DataFrame()
 
         df_voos_pax_max = pd.DataFrame()
-
-        df_router_filtrado_2['Horario Voo'] = pd.to_datetime(df_router_filtrado_2['Horario Voo'], format='%H:%M:%S').dt.time
 
         # Roteirizando com gerald os carros maiores especificados
 
