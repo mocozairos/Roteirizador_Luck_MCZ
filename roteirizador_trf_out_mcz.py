@@ -395,9 +395,9 @@ def roteirizar_hoteis_mais_pax_max(df_servicos, roteiro, df_hoteis_pax_max):
 
                         df_hoteis_pax_max = pd.concat([df_hoteis_pax_max, df_hotel_pax_max.loc[[index_2]]], ignore_index=True)
 
-                        df_hoteis_pax_max.at[index_2, 'Roteiro']=roteiro
+                        df_hoteis_pax_max.at[len(df_hoteis_pax_max)-1, 'Roteiro']=roteiro
 
-                        df_hoteis_pax_max.at[index_2, 'Carros']=carro
+                        df_hoteis_pax_max.at[len(df_hoteis_pax_max)-1, 'Carros']=carro
 
     # Se houver hotel em um mesmo voo com mais paxs que a capacidade máxima da frota, vai inserindo o horário de apresentação de cada hotel 
     # e tira de df_router_filtrado_2
@@ -430,8 +430,6 @@ def roteirizar_hoteis_mais_pax_max(df_servicos, roteiro, df_hoteis_pax_max):
 
                 df_hotel_pax_max = df_servicos[(df_servicos['Modo do Servico']==modo) & (df_servicos['Servico']==servico) & 
                                                 (df_servicos['Voo']==ref_voo) & (df_servicos['Est Origem']==hotel)].reset_index()
-
-                st.dataframe(df_hotel_pax_max)
                 
                 paxs_total_ref = 0
                 
@@ -449,9 +447,9 @@ def roteirizar_hoteis_mais_pax_max(df_servicos, roteiro, df_hoteis_pax_max):
 
                         df_hoteis_pax_max = pd.concat([df_hoteis_pax_max, df_hotel_pax_max.loc[[index_2]]], ignore_index=True)
 
-                        df_hoteis_pax_max.at[index_2, 'Roteiro']=roteiro
+                        df_hoteis_pax_max.at[len(df_hoteis_pax_max)-1, 'Roteiro']=roteiro
 
-                        df_hoteis_pax_max.at[index_2, 'Carros']=carro
+                        df_hoteis_pax_max.at[len(df_hoteis_pax_max)-1, 'Carros']=carro
 
     if len(df_hoteis_pax_max)>0:
 
