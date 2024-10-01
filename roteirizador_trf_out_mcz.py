@@ -3925,7 +3925,9 @@ if 'nome_html' in st.session_state and len(st.session_state.df_roteiros_alternat
         
     else:
 
-        if set(rotas_alternativas) & set(rotas_alternativas_2) & set(rotas_alternativas_3):
+        if (set(rotas_alternativas) & set(rotas_alternativas_2)) or \
+        (set(rotas_alternativas) & set(rotas_alternativas_3)) or \
+        (set(rotas_alternativas_2) & set(rotas_alternativas_3)):
 
             st.error('Só pode selecionar uma opção alternativa p/ cada roteiro')
 
