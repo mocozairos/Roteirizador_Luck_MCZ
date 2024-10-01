@@ -3235,7 +3235,7 @@ def plotar_roteiros_gerais_final(df_servicos, df_apoios, df_alternativos, df_apo
     
                     if modo=='REGULAR':
     
-                        titulo_roteiro = f'Opção Alternativa 1 | Roteiro {item}'
+                        titulo_roteiro = f'Opção Alternativa | Roteiro {item}'
     
                         titulo_carro = f'Veículo {carro}'
     
@@ -3245,7 +3245,7 @@ def plotar_roteiros_gerais_final(df_servicos, df_apoios, df_alternativos, df_apo
     
                         reserva = df_ref_2.at[0, 'Reserva']
     
-                        titulo_roteiro = f'Opção Alternativa 1 | Roteiro {item}'
+                        titulo_roteiro = f'Opção Alternativa | Roteiro {item}'
     
                         titulo_carro = f'Veículo {carro}'
     
@@ -3299,7 +3299,7 @@ def plotar_roteiros_gerais_final(df_servicos, df_apoios, df_alternativos, df_apo
     
                             paxs_total = int(df_ref_apoio_2['Total ADT | CHD'].sum())
     
-                            titulo_roteiro = f'Apoio | Opção Alternativa 1 | Roteiro {item}'
+                            titulo_roteiro = f'Apoio | Opção Alternativa | Roteiro {item}'
     
                             titulo_carro_principal = f'Veículo Principal {carro}'
     
