@@ -3707,7 +3707,13 @@ if roteirizar:
 
     df_hoteis_ref = st.session_state[nome_df_hotel]
 
-    sequencia_ritz = df_hoteis_ref.loc[df_hoteis_ref['Est Origem'] == 'RITZ SUITES', 'Sequência'].values[0]
+    if 'RITZ SUITES' in df_hoteis_ref['Est Origem'].unique().tolist():
+
+        sequencia_ritz = df_hoteis_ref.loc[df_hoteis_ref['Est Origem'] == 'RITZ SUITES', 'Sequência'].values[0]
+
+    else:
+
+        sequencia_ritz = 0
 
     # Filtrando apenas data especificada, OUTs e Status do Serviço diferente de 'CANCELADO' e retirando os hoteis de piedade pra fazer o roteiro em separado
 
