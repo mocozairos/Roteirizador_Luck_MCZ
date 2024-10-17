@@ -3334,14 +3334,14 @@ def plotar_roteiros_gerais_final(df_servicos, df_apoios, df_alternativos, df_apo
 
     return coluna
 
-def verificar_exclusivo(observacao):
-
-    observacao_upper = str(observacao).upper()
-
-    pattern = r"E.*X.*C.*L.*U.*S.*I.*V.*O"
+def verificar_cadeirante(observacao):
     
-    if re.search(pattern, observacao_upper):
+    observacao_upper = str(observacao).upper()
+    
+    if 'CADEIRANTE' in observacao_upper:
+        
         return True
+        
     return False
 
 st.set_page_config(layout='wide')
