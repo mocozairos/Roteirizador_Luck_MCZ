@@ -3334,6 +3334,31 @@ def plotar_roteiros_gerais_final(df_servicos, df_apoios, df_alternativos, df_apo
 
     return coluna
 
+def verificar_exclusivo(observacao):
+    palavra = "EXCLUSIVO"
+    observacao_upper = str(observacao).upper()
+
+    # Contador de letras da palavra 'CADEIRANTE'
+    contador_cadeirante = Counter(palavra)
+
+    # Divide a observação em palavras
+    palavras_observacao = observacao_upper.split()
+
+    # Verifica cada palavra individualmente
+    for palavra_observacao in palavras_observacao:
+        contador_palavra = Counter(palavra_observacao)
+
+        # Verifica se todas as letras de 'CADEIRANTE' estão presentes na palavra
+        for letra, quantidade in contador_cadeirante.items():
+            if contador_palavra[letra] < quantidade:
+                break  # Se faltar uma letra, passa para a próxima palavra
+        else:
+            # Se a palavra passou pela verificação, retorna True
+            return True
+
+    # Se nenhuma palavra contém todas as letras de 'CADEIRANTE', retorna False
+    return False
+
 def verificar_cadeirante(observacao):
     
     observacao_upper = str(observacao).upper()
