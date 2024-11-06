@@ -71,6 +71,18 @@ def puxar_sequencias_hoteis():
 
         st.session_state[df_hotel] = pd.DataFrame(sheet_data[1:], columns=sheet_data[0])
 
+        st.session_state[df_hotel]['Hoteis Juntos p/ Apoios'] = \
+        st.session_state[df_hotel]['Hoteis Juntos p/ Apoios'].apply(lambda x: None if pd.isna(x) or str(x).strip() == '' else x)
+
+        st.session_state[df_hotel]['Hoteis Juntos p/ Apoios'] = \
+        pd.to_numeric(st.session_state[df_hotel]['Hoteis Juntos p/ Apoios'], errors='coerce')
+
+        st.session_state[df_hotel]['Hoteis Juntos p/ Carro Principal'] = \
+        st.session_state[df_hotel]['Hoteis Juntos p/ Carro Principal'].apply(lambda x: None if pd.isna(x) or str(x).strip() == '' else x)
+
+        st.session_state[df_hotel]['Hoteis Juntos p/ Carro Principal'] = \
+        pd.to_numeric(st.session_state[df_hotel]['Hoteis Juntos p/ Carro Principal'], errors='coerce')
+
 def transformar_timedelta(intervalo):
     
     intervalo = timedelta(hours=intervalo.hour, minutes=intervalo.minute, seconds=intervalo.second)
@@ -103,7 +115,7 @@ def inserir_hoteis_faltantes(itens_faltantes, df_hoteis, aba_excel, regiao):
 
     st.dataframe(df_itens_faltantes, hide_index=True)
 
-    df_itens_faltantes[['Região', 'Sequência', 'Bus', 'Micro', 'Van']]=''
+    df_itens_faltantes[['Região', 'Sequência', 'Bus', 'Micro', 'Van', 'Utilitario', 'Hoteis Juntos p/ Apoios', 'Hoteis Juntos p/ Carro Principal']]=''
 
     df_hoteis_geral = pd.concat([df_hoteis, df_itens_faltantes], ignore_index=True)
 
@@ -117,10 +129,12 @@ def inserir_hoteis_faltantes(itens_faltantes, df_hoteis, aba_excel, regiao):
 
     sheet = spreadsheet.worksheet(aba_excel)
     sheet_data = sheet.get_all_values()
-    limpar_colunas = "A:F"
-    sheet.batch_clear([limpar_colunas])
-    data = [df_hoteis_geral.columns.values.tolist()] + df_hoteis_geral.values.tolist()
-    sheet.update("A1", data)
+    last_filled_row = len(sheet_data)
+    data = df_itens_faltantes.values.tolist()
+    start_row = last_filled_row + 1
+    start_cell = f"A{start_row}"
+    
+    sheet.update(start_cell, data)
 
     st.error('Os hoteis acima não estão cadastrados na lista de sequência de hoteis.' + 
              f' Eles foram inseridos no final da lista de {regiao}. Por favor, coloque-os na sequência e tente novamente')
