@@ -488,10 +488,6 @@ def roteirizar_hoteis_mais_pax_max(df_servicos, roteiro, df_hoteis_pax_max):
 
 def definir_intervalo_ref(df, value, intervalo_hoteis_bairros_iguais, intervalo_hoteis_bairros_diferentes, sequencia_ritz):
 
-    sequencia_ritz
-
-    st.write(df.at[value-1, 'Sequência'])
-
     if (df.at[value-1, 'Sequência']>=sequencia_ritz) & (df.at[value, 'Est Origem']=='FLIX HOTEL'):
 
         return intervalo_hoteis_bairros_iguais*3
@@ -3757,7 +3753,7 @@ if roteirizar:
 
     else:
 
-        sequencia_ritz = 0
+        sequencia_ritz = '000'
 
     # Filtrando apenas data especificada, OUTs e Status do Serviço diferente de 'CANCELADO' e retirando os hoteis de piedade pra fazer o roteiro em separado
 
