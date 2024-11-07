@@ -4144,8 +4144,6 @@ st.set_page_config(layout='wide')
 
 st.title('Roteirizador de Transfer Out - Maceió')
 
-st.title('Roteirizador de Transfer Out - Maceió')
-
 st.divider()
 
 st.header('Parâmetros')
