@@ -2329,7 +2329,7 @@ def verificar_rotas_alternativas_ou_plotar_roteiros_com_apoio(df_roteiros_altern
 
             coluna = plotar_roteiros_simples(df_hoteis_pax_max, row3, coluna)
 
-        coluna = plotar_roteiros_gerais(df_router_filtrado_2, df_roteiros_apoios, df_roteiros_alternativos, df_roteiros_apoios_alternativos, coluna, row3)
+        coluna = plotar_roteiros_gerais_com_apoio(df_router_filtrado_2, df_roteiros_apoios, df_roteiros_alternativos, df_roteiros_apoios_alternativos, coluna, row3)
 
         html = definir_html(df_juncao_voos)
 
