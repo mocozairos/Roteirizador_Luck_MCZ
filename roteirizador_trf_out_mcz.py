@@ -386,7 +386,7 @@ def definir_horario_primeiro_hotel(df, index):
 
                     return data_hora_voo - transformar_timedelta(st.session_state.intervalo_inicial_orla_maceio)
         
-        elif servico=='OUT - GRANDE MACEIÓ' or servico=='OUT - BARRA DE SÃO MIGUEL' or 'OUT- FRANCÊS':
+        elif servico=='OUT - GRANDE MACEIÓ' or servico=='OUT - BARRA DE SÃO MIGUEL' or servico=='OUT- FRANCÊS':
 
             if servico=='OUT - GRANDE MACEIÓ' and (nome_voo in st.session_state.voos_fret):
 
