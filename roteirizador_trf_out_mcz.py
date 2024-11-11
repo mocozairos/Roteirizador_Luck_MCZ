@@ -4469,10 +4469,8 @@ if 'df_insercao' in st.session_state and len(st.session_state.df_insercao)>0:
 
     lancar_horarios = st.button('Lançar Horários')
 
-    if lancar_horarios:
+    if lancar_horarios and len(st.session_state.df_insercao)>0:
 
         df_insercao = atualizar_banco_dados(st.session_state.df_insercao, 'test_phoenix_maceio')
 
         st.session_state.df_insercao = st.session_state.df_insercao.drop(st.session_state.df_insercao.index)
-
-        st.experimental_rerun()
