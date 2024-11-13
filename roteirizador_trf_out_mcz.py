@@ -552,7 +552,7 @@ def roteirizar_hoteis_mais_pax_max(df_servicos, roteiro, df_hoteis_pax_max):
 
             pax_ref = df_ref_com_juncao.at[index, 'Total ADT | CHD']
 
-            loops = int(pax_ref//pax_max)
+            loops = int(pax_ref//st.session_state.pax_max)
 
             modo = df_ref_com_juncao.at[index, 'Modo do Servico']
 
@@ -608,7 +608,7 @@ def roteirizar_hoteis_mais_pax_max(df_servicos, roteiro, df_hoteis_pax_max):
 
             pax_ref = df_ref_sem_juncao.at[index, 'Total ADT | CHD']
 
-            loops = int(pax_ref//pax_max)
+            loops = int(pax_ref//st.session_state.pax_max)
 
             modo = df_ref_sem_juncao.at[index, 'Modo do Servico']
 
