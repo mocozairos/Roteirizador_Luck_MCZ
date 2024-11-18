@@ -4079,6 +4079,8 @@ st.divider()
 
 st.header('Juntar Voos')
 
+st.markdown('*os voos internacionais entre 00:00 e 00:59, na verdade serão executados em D+1, porém, pela antecedência de 1h a mais, eles aparecem no dia selecionado*')
+
 row2 = st.columns(3)
 
 # Botões Atualizar Hoteis, Atualizar Dados Phoenix, campos de Data e botões de roteirizar e visualizar voos
