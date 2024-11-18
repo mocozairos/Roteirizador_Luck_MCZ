@@ -236,7 +236,7 @@ def criar_df_servicos_2(df_servicos, df_juncao_voos, df_hoteis):
 
     # Preenchendo coluna 'Data Horario Apresentacao'
 
-    df_servicos['Data Horario Apresentacao'] = pd.to_datetime(df_servicos['Data Voo'] + ' ' + df_servicos['Horario Voo'])
+    df_servicos['Data Horario Apresentacao'] = pd.to_datetime(df_servicos['Data Voo'].astype(str) + ' ' + df_servicos['Horario Voo'].astype(str))
     
     # Criando coluna de Junção através de pd.merge
 
@@ -1135,7 +1135,7 @@ def gerar_horarios_apresentacao(df_servicos, roteiro, max_hoteis):
 
     return df_servicos, roteiro
 
-def gerar_roteiros_alternativos(df_servicos, max_hoteis_ref):
+def gerar_roteiros_alternativos(df_servicos):
 
     df_roteiros_alternativos = pd.DataFrame(columns=df_servicos.columns.tolist())
 
@@ -1157,61 +1157,91 @@ def gerar_roteiros_alternativos(df_servicos, max_hoteis_ref):
 
             max_hoteis = divisao_inteira + 1
 
-        if max_hoteis!=max_hoteis_ref:
+        carros = 1
+    
+        paxs_total_roteiro = 0
 
-            carros = 1
-        
-            paxs_total_roteiro = 0
+        contador_hoteis = 0
 
-            contador_hoteis = 0
+        bairro = ''
 
-            bairro = ''
+        for index in range(len(df_ref)):
 
-            for index in range(len(df_ref)):
+            if index==0:
 
-                if index==0:
+                df_ref.at[index, 'Data Horario Apresentacao']=definir_horario_primeiro_hotel(df_ref, index)
+                
+                data_horario_primeiro_hotel = df_ref.at[index, 'Data Horario Apresentacao']
+                
+                if not pd.isna(df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']):
+                                
+                    paxs_hotel = df_ref[df_ref['Hoteis Juntos p/ Carro Principal']==df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']]['Total ADT | CHD'].sum()
+                    
+                else:
+
+                    paxs_hotel = df_ref[df_ref['Est Origem']==df_ref.at[index, 'Est Origem']]['Total ADT | CHD'].sum()
+
+                paxs_total_roteiro+=paxs_hotel
+
+                df_ref = preencher_roteiro_carros(df_ref, item, carros, index)
+
+                contador_hoteis+=1
+
+            elif (df_ref.at[index, 'Est Origem']==df_ref.at[index-1, 'Est Origem']) | (df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']==df_ref.at[index-1, 'Hoteis Juntos p/ Carro Principal']):
+
+                df_ref.at[index, 'Data Horario Apresentacao']=df_ref.at[index-1, 'Data Horario Apresentacao']
+
+                df_ref = preencher_roteiro_carros(df_ref, item, carros, index)
+
+            else:
+
+                contador_hoteis+=1
+
+                if contador_hoteis>max_hoteis:
+
+                    carros+=1
 
                     df_ref.at[index, 'Data Horario Apresentacao']=definir_horario_primeiro_hotel(df_ref, index)
                     
-                    data_horario_primeiro_hotel = df_ref.at[index, 'Data Horario Apresentacao']
-                    
                     if not pd.isna(df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']):
-                                    
+                                
                         paxs_hotel = df_ref[df_ref['Hoteis Juntos p/ Carro Principal']==df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']]['Total ADT | CHD'].sum()
                         
                     else:
 
                         paxs_hotel = df_ref[df_ref['Est Origem']==df_ref.at[index, 'Est Origem']]['Total ADT | CHD'].sum()
 
+                    data_horario_primeiro_hotel = df_ref.at[index, 'Data Horario Apresentacao']
+
+                    paxs_total_roteiro = 0
+
+                    bairro = ''
+
                     paxs_total_roteiro+=paxs_hotel
 
-                    df_ref = preencher_roteiro_carros(df_ref, item, carros, index)
+                    df_ref.at[index, 'Roteiro'] = item
 
-                    contador_hoteis+=1
-
-                elif (df_ref.at[index, 'Est Origem']==df_ref.at[index-1, 'Est Origem']) | (df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']==df_ref.at[index-1, 'Hoteis Juntos p/ Carro Principal']):
-
-                    df_ref.at[index, 'Data Horario Apresentacao']=df_ref.at[index-1, 'Data Horario Apresentacao']
-
-                    df_ref = preencher_roteiro_carros(df_ref, item, carros, index)
-
+                    df_ref.at[index, 'Carros'] = carros
+                    
+                    contador_hoteis = 1
+                    
                 else:
 
-                    contador_hoteis+=1
+                    bairro=df_ref.at[index, 'Região']
 
-                    if contador_hoteis>max_hoteis:
+                    if not pd.isna(df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']):
+                                
+                        paxs_hotel = df_ref[df_ref['Hoteis Juntos p/ Carro Principal']==df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']]['Total ADT | CHD'].sum()
+                        
+                    else:
+
+                        paxs_hotel = df_ref[df_ref['Est Origem']==df_ref.at[index, 'Est Origem']]['Total ADT | CHD'].sum()
+
+                    if paxs_total_roteiro+paxs_hotel>st.session_state.pax_max:
 
                         carros+=1
 
                         df_ref.at[index, 'Data Horario Apresentacao']=definir_horario_primeiro_hotel(df_ref, index)
-                        
-                        if not pd.isna(df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']):
-                                    
-                            paxs_hotel = df_ref[df_ref['Hoteis Juntos p/ Carro Principal']==df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']]['Total ADT | CHD'].sum()
-                            
-                        else:
-
-                            paxs_hotel = df_ref[df_ref['Est Origem']==df_ref.at[index, 'Est Origem']]['Total ADT | CHD'].sum()
 
                         data_horario_primeiro_hotel = df_ref.at[index, 'Data Horario Apresentacao']
 
@@ -1226,20 +1256,22 @@ def gerar_roteiros_alternativos(df_servicos, max_hoteis_ref):
                         df_ref.at[index, 'Carros'] = carros
                         
                         contador_hoteis = 1
-                        
+
                     else:
 
-                        bairro=df_ref.at[index, 'Região']
+                        paxs_total_roteiro+=paxs_hotel
 
-                        if not pd.isna(df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']):
-                                    
-                            paxs_hotel = df_ref[df_ref['Hoteis Juntos p/ Carro Principal']==df_ref.at[index, 'Hoteis Juntos p/ Carro Principal']]['Total ADT | CHD'].sum()
+                        if bairro!='':
+
+                            intervalo_ref = definir_intervalo_ref(df_ref, index)
                             
-                        else:
+                        if paxs_hotel>=st.session_state.pax_cinco_min:
 
-                            paxs_hotel = df_ref[df_ref['Est Origem']==df_ref.at[index, 'Est Origem']]['Total ADT | CHD'].sum()
+                            intervalo_ref+=timedelta(hours=0, minutes=5, seconds=0)
 
-                        if paxs_total_roteiro+paxs_hotel>st.session_state.pax_max:
+                        data_horario_hotel = df_ref.at[index-1, 'Data Horario Apresentacao']-intervalo_ref
+
+                        if data_horario_primeiro_hotel - data_horario_hotel>transformar_timedelta(st.session_state.intervalo_pu_hotel):
 
                             carros+=1
 
@@ -1261,43 +1293,9 @@ def gerar_roteiros_alternativos(df_servicos, max_hoteis_ref):
 
                         else:
 
-                            paxs_total_roteiro+=paxs_hotel
+                            df_ref.at[index, 'Data Horario Apresentacao']=data_horario_hotel
 
-                            if bairro!='':
-
-                                intervalo_ref = definir_intervalo_ref(df_ref, index)
-                                
-                            if paxs_hotel>=st.session_state.pax_cinco_min:
-
-                                intervalo_ref+=timedelta(hours=0, minutes=5, seconds=0)
-
-                            data_horario_hotel = df_ref.at[index-1, 'Data Horario Apresentacao']-intervalo_ref
-
-                            if data_horario_primeiro_hotel - data_horario_hotel>transformar_timedelta(st.session_state.intervalo_pu_hotel):
-
-                                carros+=1
-
-                                df_ref.at[index, 'Data Horario Apresentacao']=definir_horario_primeiro_hotel(df_ref, index)
-
-                                data_horario_primeiro_hotel = df_ref.at[index, 'Data Horario Apresentacao']
-
-                                paxs_total_roteiro = 0
-
-                                bairro = ''
-
-                                paxs_total_roteiro+=paxs_hotel
-
-                                df_ref.at[index, 'Roteiro'] = item
-
-                                df_ref.at[index, 'Carros'] = carros
-                                
-                                contador_hoteis = 1
-
-                            else:
-
-                                df_ref.at[index, 'Data Horario Apresentacao']=data_horario_hotel
-
-                                df_ref = preencher_roteiro_carros(df_ref, item, carros, index)
+                            df_ref = preencher_roteiro_carros(df_ref, item, carros, index)
 
             df_roteiros_alternativos = pd.concat([df_roteiros_alternativos, df_ref], ignore_index=True)
 
@@ -2306,10 +2304,11 @@ def inserir_roteiros_html_com_apoio(nome_html, df_pdf, df_pdf_apoios):
 
                         file.write('\n\n')
 
-def verificar_rotas_alternativas_ou_plotar_roteiros_com_apoio(df_roteiros_alternativos, row_warning, row3, coluna, df_hoteis_pax_max, df_router_filtrado_2, df_roteiros_apoios, df_roteiros_apoios_alternativos, df_juncao_voos, nome_html):
+def verificar_rotas_alternativas_ou_plotar_roteiros_com_apoio(df_roteiros_alternativos, row_warning, row3, coluna, df_hoteis_pax_max, df_router_filtrado_2, df_roteiros_apoios, 
+                                                              df_roteiros_apoios_alternativos, df_juncao_voos, nome_html):
 
     if len(st.session_state.df_roteiros_alternativos)>0 or len(st.session_state.df_roteiros_alternativos_2)>0 or len(st.session_state.df_roteiros_alternativos_3)>0 or \
-        len(st.session_state.df_roteiros_alternativos_4)>0:
+        len(st.session_state.df_roteiros_alternativos_4)>0 or len(st.session_state.df_roteiros_alternativos_5)>0:
 
         with row_warning[0]:
 
@@ -2381,7 +2380,11 @@ def verificar_rotas_alternativas_ou_plotar_roteiros_com_apoio(df_roteiros_altern
 def plotar_roteiros_gerais_alternativos_com_apoio(df_servicos, df_apoios, df_alternativos, df_alternativos_2, df_alternativos_3, df_alternativos_4, df_apoios_alternativos, df_apoios_alternativos_2, 
                                                   df_apoios_alternativos_3, df_apoios_alternativos_4, coluna, row3):
 
-    for item in df_alternativos['Roteiro'].unique().tolist():
+    df_rotas_alternativas = pd.concat([df_alternativos['Roteiro'], df_alternativos_2['Roteiro'], df_alternativos_3['Roteiro'], df_alternativos_4['Roteiro']], ignore_index=True).reset_index()
+
+    lista_todas_rotas_alternativas = sorted(df_rotas_alternativas['Roteiro'].unique().tolist())
+
+    for item in lista_todas_rotas_alternativas:
 
         df_ref_1 = df_servicos[df_servicos['Roteiro']==item].reset_index(drop=True)
 
@@ -3416,6 +3419,8 @@ def gerar_horarios_apresentacao_2(df_servicos):
 
 def atualizar_banco_dados(df_exportacao, base_luck):
 
+    st.session_state.df_insercao = st.session_state.df_insercao.drop(st.session_state.df_insercao.index)
+
     config = {
     'user': 'user_automation',
     'password': 'auto_luck_2024',
@@ -3815,6 +3820,16 @@ def verificar_exclusivo(observacao):
     # Se nenhuma palavra contém todas as letras de 'CADEIRANTE', retorna False
     return False
 
+def ajustar_data_execucao_voos_internacionais_madrugada():
+
+    st.session_state.df_router['Horario Voo'] = pd.to_datetime(st.session_state.df_router['Horario Voo'], format='%H:%M:%S').dt.time
+
+    mask_voos_inter_madrugada = (st.session_state.df_router['Tipo do Translado']=='Internacional') & (st.session_state.df_router['Horario Voo']<=time(0,59))
+
+    st.session_state.df_router['Data Execucao'] = pd.to_datetime(st.session_state.df_router['Data Execucao'], format='%Y-%m-%d').dt.date
+
+    st.session_state.df_router.loc[mask_voos_inter_madrugada, 'Data Execucao'] = st.session_state.df_router['Data Execucao'] - timedelta(days=1)
+
 def puxar_dados_phoenix():
 
     st.session_state.df_router = gerar_df_phoenix('vw_router', 'test_phoenix_maceio')
@@ -3825,6 +3840,8 @@ def puxar_dados_phoenix():
     st.session_state.df_router = st.session_state.df_router[(st.session_state.df_router['Status da Reserva']!='CANCELADO')].reset_index(drop=True)
     
     st.session_state.df_router['Data Horario Apresentacao Original'] = st.session_state.df_router['Data Horario Apresentacao']
+
+    ajustar_data_execucao_voos_internacionais_madrugada()
     
     st.session_state.vw_payment_guide = gerar_df_phoenix('vw_payment_guide', 'test_phoenix_maceio')
 
@@ -3991,6 +4008,34 @@ def recalcular_horarios_menor_horario(df_router_filtrado_2):
                 df_router_filtrado_2.at[index_principal, 'Data Horario Apresentacao'] = df_ref.at[index_2, 'Data Horario Apresentacao']
 
     return df_router_filtrado_2
+
+def verificar_rotas_identicas(df_router_filtrado_2, df_roteiros_alternativos):
+
+    lista_roteiros = df_router_filtrado_2['Roteiro'].unique().tolist()
+
+    for roteiro_referencia in lista_roteiros:
+
+        df_servicos_principal = df_router_filtrado_2[(df_router_filtrado_2['Roteiro']==roteiro_referencia)][['Id_Servico', 'Data Horario Apresentacao', 'Roteiro', 'Carros']].reset_index(drop=True)
+
+        df_servicos_alternativo = df_roteiros_alternativos[(df_roteiros_alternativos['Roteiro']==roteiro_referencia)][['Id_Servico', 'Data Horario Apresentacao', 'Roteiro', 'Carros']].reset_index(drop=True)
+
+        df_servicos_alternativo['Id_Servico'] = df_servicos_alternativo['Id_Servico'].astype('int64')
+
+        df_servicos_alternativo['Roteiro'] = df_servicos_alternativo['Roteiro'].astype('int64')
+
+        df_servicos_alternativo['Carros'] = df_servicos_alternativo['Carros'].astype('int64')
+
+        df_servicos_principal['Id_Servico'] = df_servicos_principal['Id_Servico'].astype('int64')
+
+        df_servicos_principal['Roteiro'] = df_servicos_principal['Roteiro'].astype('int64')
+
+        df_servicos_principal['Carros'] = df_servicos_principal['Carros'].astype('int64')
+
+        if df_servicos_principal.equals(df_servicos_alternativo):
+
+            df_roteiros_alternativos = df_roteiros_alternativos[(df_roteiros_alternativos['Roteiro']!=roteiro_referencia)].reset_index(drop=True)
+
+    return df_roteiros_alternativos
 
 st.set_page_config(layout='wide')
 
@@ -4453,7 +4498,7 @@ if roteirizar:
 
     # Gerando roteiros alternativos
 
-    df_roteiros_alternativos = gerar_roteiros_alternativos(df_router_filtrado_2, st.session_state.max_hoteis)
+    df_roteiros_alternativos = gerar_roteiros_alternativos(df_router_filtrado_2)
 
     df_roteiros_alternativos = recalcular_horarios_menor_horario(df_roteiros_alternativos)
 
@@ -4525,16 +4570,26 @@ if roteirizar:
 
     df_roteiros_alternativos_4 = roteirizar_pos_apoios(df_roteiros_apoios_alternativos_4, df_roteiros_alternativos_4)
 
-    
+    df_roteiros_alternativos = verificar_rotas_identicas(df_router_filtrado_2, df_roteiros_alternativos)
 
-    
+    df_roteiros_alternativos_2 = verificar_rotas_identicas(df_router_filtrado_2, df_roteiros_alternativos_2)
 
-    
+    df_roteiros_alternativos_2 = verificar_rotas_identicas(df_roteiros_alternativos, df_roteiros_alternativos_2)
 
-    
+    df_roteiros_alternativos_3 = verificar_rotas_identicas(df_router_filtrado_2, df_roteiros_alternativos_3)
 
-    
+    df_roteiros_alternativos_3 = verificar_rotas_identicas(df_roteiros_alternativos_2, df_roteiros_alternativos_3)
 
+    df_roteiros_alternativos_3 = verificar_rotas_identicas(df_roteiros_alternativos, df_roteiros_alternativos_3)
+
+    df_roteiros_alternativos_4 = verificar_rotas_identicas(df_router_filtrado_2, df_roteiros_alternativos_4)
+
+    df_roteiros_alternativos_4 = verificar_rotas_identicas(df_roteiros_alternativos_3, df_roteiros_alternativos_4)
+
+    df_roteiros_alternativos_4 = verificar_rotas_identicas(df_roteiros_alternativos_2, df_roteiros_alternativos_4)
+
+    df_roteiros_alternativos_4 = verificar_rotas_identicas(df_roteiros_alternativos, df_roteiros_alternativos_4)
+    
     # Plotando roteiros de cada carro
 
     st.divider()
@@ -4825,4 +4880,4 @@ if 'df_insercao' in st.session_state and len(st.session_state.df_insercao)>0:
 
         df_insercao = atualizar_banco_dados(st.session_state.df_insercao, 'test_phoenix_maceio')
 
-        st.session_state.df_insercao = st.session_state.df_insercao.drop(st.session_state.df_insercao.index)
+        st.rerun()
