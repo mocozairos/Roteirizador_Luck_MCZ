@@ -3960,6 +3960,38 @@ def gerar_roteiros_alternativos_4(df_servicos, pax_max_utilitario, pax_max_van, 
 
     return df_roteiros_alternativos
 
+def recalcular_horarios_menor_horario(df_router_filtrado_2):
+
+    df_roteiros_carros = df_router_filtrado_2[['Roteiro', 'Carros', 'Junção']].drop_duplicates().reset_index(drop=True)
+
+    df_roteiros_carros = df_roteiros_carros[~pd.isna(df_roteiros_carros['Junção'])].reset_index(drop=True)
+
+    for index in range(len(df_roteiros_carros)):
+
+        roteiro_referencia = df_roteiros_carros.at[index, 'Roteiro']
+
+        carro_referencia = df_roteiros_carros.at[index, 'Carros']
+
+        df_ref = df_router_filtrado_2[(df_router_filtrado_2['Roteiro']==roteiro_referencia) & (df_router_filtrado_2['Carros']==carro_referencia)].reset_index()
+
+        horario_voo_mais_cedo = df_ref['Horario Voo'].min()
+
+        horario_menor_horario = df_ref['Menor Horário'].min()
+
+        if horario_voo_mais_cedo!=horario_menor_horario:
+
+            st.write(f'Encontrou no roteiro {roteiro_referencia} | carro {carro_referencia}')
+
+            df_ref['Menor Horário'] = horario_voo_mais_cedo
+
+            df_ref = gerar_horarios_apresentacao_2(df_ref)
+
+            for index_2, index_principal in df_ref['index'].items():
+
+                df_router_filtrado_2.at[index_principal, 'Data Horario Apresentacao'] = df_ref.at[index_2, 'Data Horario Apresentacao']
+
+    return df_router_filtrado_2
+
 st.set_page_config(layout='wide')
 
 st.title('Roteirizador de Transfer Out - Maceió')
@@ -4405,6 +4437,8 @@ if roteirizar:
 
         st.stop()
 
+    df_router_filtrado_2 = recalcular_horarios_menor_horario(df_router_filtrado_2)
+
     # Identificando serviços das rotas primárias que vão precisar de apoios
 
     df_router_filtrado_2 = identificar_apoios_em_df(df_router_filtrado_2, pax_max_utilitario, pax_max_van, pax_max_micro)
@@ -4421,6 +4455,8 @@ if roteirizar:
 
     df_roteiros_alternativos = gerar_roteiros_alternativos(df_router_filtrado_2, st.session_state.max_hoteis)
 
+    df_roteiros_alternativos = recalcular_horarios_menor_horario(df_roteiros_alternativos)
+
     # Gerando roteiros alternativos 2
 
     max_hoteis_2 = 10
@@ -4429,11 +4465,17 @@ if roteirizar:
 
     df_roteiros_alternativos_2 = gerar_roteiros_alternativos_2(df_router_filtrado_2, max_hoteis_2, intervalo_pu_hotel_2)
 
+    df_roteiros_alternativos_2 = recalcular_horarios_menor_horario(df_roteiros_alternativos_2)
+
     df_roteiros_alternativos_3 = gerar_roteiros_alternativos_3(df_router_filtrado_2)
+
+    df_roteiros_alternativos_3 = recalcular_horarios_menor_horario(df_roteiros_alternativos_3)
 
     # Gerando roteiros alternativos 4
 
     df_roteiros_alternativos_4 = gerar_roteiros_alternativos_4(df_router_filtrado_2, pax_max_utilitario, pax_max_van, pax_max_micro, max_hoteis_2)
+
+    df_roteiros_alternativos_4 = recalcular_horarios_menor_horario(df_roteiros_alternativos_4)
     
     # Identificando serviços das rotas alternativas que vão precisar de apoios
 
@@ -4482,6 +4524,16 @@ if roteirizar:
     # Roteirizando carro principal desconsiderando os hoteis do apoio
 
     df_roteiros_alternativos_4 = roteirizar_pos_apoios(df_roteiros_apoios_alternativos_4, df_roteiros_alternativos_4)
+
+    
+
+    
+
+    
+
+    
+
+    
 
     # Plotando roteiros de cada carro
 
