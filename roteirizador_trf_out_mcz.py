@@ -3997,8 +3997,6 @@ def recalcular_horarios_menor_horario(df_router_filtrado_2):
 
         if horario_voo_mais_cedo!=horario_menor_horario:
 
-            st.write(f'Encontrou no roteiro {roteiro_referencia} | carro {carro_referencia}')
-
             df_ref['Menor Horário'] = horario_voo_mais_cedo
 
             df_ref = gerar_horarios_apresentacao_2(df_ref)
