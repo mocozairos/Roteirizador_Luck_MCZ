@@ -2308,7 +2308,7 @@ def verificar_rotas_alternativas_ou_plotar_roteiros_com_apoio(df_roteiros_altern
                                                               df_roteiros_apoios_alternativos, df_juncao_voos, nome_html):
 
     if len(st.session_state.df_roteiros_alternativos)>0 or len(st.session_state.df_roteiros_alternativos_2)>0 or len(st.session_state.df_roteiros_alternativos_3)>0 or \
-        len(st.session_state.df_roteiros_alternativos_4)>0 or len(st.session_state.df_roteiros_alternativos_5)>0:
+        len(st.session_state.df_roteiros_alternativos_4)>0:
 
         with row_warning[0]:
 
