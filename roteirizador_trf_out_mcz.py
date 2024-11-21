@@ -1297,7 +1297,7 @@ def gerar_roteiros_alternativos(df_servicos):
 
                             df_ref = preencher_roteiro_carros(df_ref, item, carros, index)
 
-            df_roteiros_alternativos = pd.concat([df_roteiros_alternativos, df_ref], ignore_index=True)
+        df_roteiros_alternativos = pd.concat([df_roteiros_alternativos, df_ref], ignore_index=True)
 
     return df_roteiros_alternativos
 
