@@ -3837,7 +3837,8 @@ def puxar_dados_phoenix():
     st.session_state.lista_voos = st.session_state.df_router[~(pd.isna(st.session_state.df_router['Voo'])) & (st.session_state.df_router['Tipo de Servico']=='OUT') & 
                                                              (st.session_state.df_router['Status do Servico']!='CANCELADO')]['Voo'].unique().tolist()
     
-    st.session_state.df_router = st.session_state.df_router[(st.session_state.df_router['Status da Reserva']!='CANCELADO')].reset_index(drop=True)
+    st.session_state.df_router = st.session_state.df_router[(st.session_state.df_router['Status da Reserva']!='CANCELADO') & 
+                                                            (st.session_state.df_router['Status da Reserva']!='PENDENCIA DE IMPORTAÇÃO')].reset_index(drop=True)
     
     st.session_state.df_router['Data Horario Apresentacao Original'] = st.session_state.df_router['Data Horario Apresentacao']
 
