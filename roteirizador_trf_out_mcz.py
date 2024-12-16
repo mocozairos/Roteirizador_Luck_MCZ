@@ -4036,6 +4036,24 @@ def verificar_rotas_identicas(df_router_filtrado_2, df_roteiros_alternativos):
 
     return df_roteiros_alternativos
 
+def verificar_preenchimento_df_hoteis(df_hoteis_ref):
+
+    hoteis_sem_regiao = df_hoteis_ref[df_hoteis_ref['Região']=='']['Est Origem'].unique().tolist()
+
+    hoteis_sem_sequencia = df_hoteis_ref[pd.isna(df_hoteis_ref['Sequência'])]['Est Origem'].unique().tolist()
+
+    hoteis_sem_acessibilidade = df_hoteis_ref[df_hoteis_ref[['Bus', 'Micro', 'Van', 'Utilitario']].isna().all(axis=1)]['Est Origem'].unique().tolist()
+
+    hoteis_unificados = list(set(hoteis_sem_regiao + hoteis_sem_sequencia + hoteis_sem_acessibilidade))
+
+    if len(hoteis_unificados)>0:
+
+        nome_hoteis = ', '.join(hoteis_unificados)
+
+        st.error(f'Os hoteis {nome_hoteis} estão com cadastro errado. Pode estar faltando o número da sequência, o nome da região ou o preenchimento da acessibilidade. Verifique, ajuste e tente novamente.')
+
+        st.stop()
+
 st.set_page_config(layout='wide')
 
 st.title('Roteirizador de Transfer Out - Maceió')
@@ -4389,6 +4407,8 @@ if roteirizar:
     nome_regiao = st.session_state.dict_regioes_hoteis[servico_roteiro][3]
 
     df_hoteis_ref = st.session_state[nome_df_hotel]
+
+    verificar_preenchimento_df_hoteis(df_hoteis_ref)
 
     if 'RITZ SUITES' in df_hoteis_ref['Est Origem'].unique().tolist():
 
